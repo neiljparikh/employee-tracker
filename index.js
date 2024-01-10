@@ -4,8 +4,6 @@ const mysql = require('mysql2/promise');
 
 let db;
 
-
-
 console.log(db)
 //HELPER FUNCTIONS
 async function addDepartment() {
@@ -85,6 +83,10 @@ async function addEmployee() {
 
 async function addRole() {
     
+      
+    const allDepartments  = await db.query('SELECT * FROM department')
+    const departmentChoices = allDepartments.map((department) => ({ name: department.title, value: department.id }));
+    
     const { title, salary, departmentId } = await inquirer.prompt([
         {
           type: "input",
@@ -103,9 +105,7 @@ async function addRole() {
             choices: departmentChoices
         },
       ])
-  
-      const allDepartments  = await db.query('SELECT * FROM department')
-      const departmentChoices = allDepartments.map((department) => ({ name: department.title, value: department.id }));
+
       
       const query = await db.query('INSERT INTO employee (title, salary, department_id) VALUES (?, ?, ?)', [
         title,
@@ -119,6 +119,24 @@ async function addRole() {
         }
 }
 
+async function addDepartment() {
+    
+    const { departmentName } = await inquirer.prompt([
+        {
+          type: "input",
+          message: "What is the name of the department?",
+          name: "departmentName",
+        },
+       
+      ])
+
+      const query = await db.query(('INSERT INTO department (name) VALUES (?)'), departmentName)
+        
+        if (query) {
+        console.log("Department added successfully!");
+        mainMenu();
+        }
+}
 async function viewAllDepartments() {
     
    
@@ -170,6 +188,8 @@ function handleUserChoice(command) {
       console.log("Application Quit");
     }
 }
+
+
 
 //USER INTERACTIONS
 async function mainMenu() {
