@@ -59,7 +59,7 @@ async function addEmployee() {
       const roleChoices = departmentRoles.map((role) => ({ name: role.title, value: role.id }));
       // query for roles that have the selected department_id
 
-      const { selectedRoleId} = await inquirer.prompt([
+      const { selectedRoleId } = await inquirer.prompt([
         {
           type: "list",
           message: "What is the role of the employee?",
@@ -130,15 +130,20 @@ async function viewAllDepartments() {
         }
 }
 
-async function viewAllDepartments() {
+async function viewAllEmployees() {
     
    
-    const query  = await db.query('SELECT department.id, department.name AS department_name FROM department')
+    const query  = await db.query(
+    `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, manager_id, CONCAT(employee.first_name,' ',employee.last_name) AS employee_manager
+    FROM employee 
+    JOIN role ON employee.role_id = role.id
+    JOIN department ON role.department_id = department.id
+    LEFT JOIN employee_manager ON employee.manager_id = employee.id`)
     console.table(query)
     
     
-    if (query.length > 0) {
-      console.log("Departments retrieved successfully!");
+    if (query) {
+      console.log("Employees retrieved successfully!");
       mainMenu();
       }
 }

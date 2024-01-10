@@ -19,11 +19,13 @@ PRIMARY KEY (id)
 
 
 CREATE TABLE employee (
-id INT AUTO_INCREMENT NOT NULL,
+id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 first_name VARCHAR(30),
 last_name VARCHAR(30),
 role_id INT,
+manager_id INT,
 FOREIGN KEY (role_id)
 REFERENCES role(id),
-PRIMARY KEY (id)
+FOREIGN KEY (manager_id)
+REFERENCES employee(id)
 );  
