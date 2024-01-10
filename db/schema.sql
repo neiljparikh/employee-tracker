@@ -1,3 +1,4 @@
+DROP DATABASE employees;
 CREATE DATABASE employees;
 USE employees;
 

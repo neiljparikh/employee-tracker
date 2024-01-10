@@ -1,10 +1,12 @@
 //DEPENDENCIES
 const inquirer = require('inquirer')
 const mysql = require('mysql2/promise');
-const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'employees'});
+
+let db;
 
 
 
+console.log(db)
 //HELPER FUNCTIONS
 async function addDepartment() {
   
@@ -121,12 +123,13 @@ async function viewAllDepartments() {
     
    
       const query  = await db.query('SELECT department.id, department.name AS department_name FROM department')
-      console.table(query)
-      
-      
+  
       if (query.length > 0) {
+       const sanitizedQuery = query[0].map((department) => department.department_name)
+        console.table(sanitizedQuery)
         console.log("Departments retrieved successfully!");
         mainMenu();
+   
         }
 }
 
@@ -138,7 +141,7 @@ async function viewAllEmployees() {
     FROM employee 
     JOIN role ON employee.role_id = role.id
     JOIN department ON role.department_id = department.id
-    LEFT JOIN employee_manager ON employee.manager_id = employee.id`)
+    LEFT JOIN employee.last_name ON employee.manager_id = employee.id`)
     console.table(query)
     
     
@@ -169,7 +172,9 @@ function handleUserChoice(command) {
 }
 
 //USER INTERACTIONS
-function mainMenu() {
+async function mainMenu() {
+    db = await mysql.createConnection({host:'localhost', user: 'root', password: '', database: 'employees'});
+   
     inquirer.prompt([ 
     {
         type: 'list',
@@ -181,7 +186,7 @@ function mainMenu() {
         'Update Employee Role', 
         'View All Roles', 
         'Add Role', 
-        'View All Department', 
+        'View All Departments', 
         'Add Department', 
         'Quit'
         ]
