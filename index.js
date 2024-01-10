@@ -74,7 +74,7 @@ async function addEmployee() {
           choices: departmentChoices,
         },
       ])
-      
+
       // use selected department name to relate back to department_id
       const selectedDeptId = allDepartments.filter((dept) => (dept.name === selectedDepartment[0]).id)
       // select id, name from role where department_id=?, selectedDeptId
@@ -102,6 +102,50 @@ async function addEmployee() {
         mainMenu();
         }
     }
+
+
+async function addRole() {
+    
+    const { title, salary, departmentId } = await inquirer.prompt([
+        {
+          type: "input",
+          message: "What is the title of the role?",
+          name: "title",
+        },
+        {
+            type: "input",
+            message: "What is the salary of the role?",
+            name: "salary",
+          },
+        {
+            type: "list",
+            message: "What is the department of the role?",
+            name: "departmentId",
+            choices: departmentChoices
+        },
+      ])
+  
+      const allDepartments  = await db.query('SELECT * FROM department')
+      const departmentChoices = allDepartments.map((department) => ({ name: department.title, value: department.id }));
+      
+      const query = await db.query('INSERT INTO employee (title, salary, department_id) VALUES (?, ?, ?)', [
+        title,
+        salary,
+        departmentId,
+    ]);
+
+        if (query) {
+        console.log("Employee added successfully!");
+        mainMenu();
+        }
+
+
+}
+
+
+
+
+
 
 function handleUserChoice(command) {
     if (command === "Add Department") {
