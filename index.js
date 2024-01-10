@@ -66,38 +66,42 @@ async function addEmployee() {
 
 
 
-    const { department } = await inquirer.prompt([
+    const { selectedDepartment } = await inquirer.prompt([
         {
           type: "list",
           message: "What is the department of the employee?",
-          name: "department",
+          name: "selectedDepartment",
           choices: departmentChoices,
         },
       ])
-
-      // use selected department name to relate back to department_id
-      const selectedDeptId = allDepartments.filter((dept) => (dept.name === department[0].id))
       
+      // use selected department name to relate back to department_id
+      const selectedDeptId = allDepartments.filter((dept) => (dept.name === selectedDepartment[0]).id)
       // select id, name from role where department_id=?, selectedDeptId
-
+      const departmentRoles = await db.query('SELECT id, title FROM role WHERE department_id = ?', selectedDeptId);
+      const roleChoices = departmentRoles.map((role) => ({ name: role.title, value: role.id }));
       // query for roles that have the selected department_id
 
-      const { role } = await inquirer.prompt([
+      const { selectedRoleId} = await inquirer.prompt([
         {
-          type: "input",
+          type: "list",
           message: "What is the role of the employee?",
-          name: "name",
+          name: "selectedRoleId",
+          choices: roleChoices
         },
-      ])
+      ]);
+      
+      const query = await db.query('INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)', [
+        firstName,
+        lastName,
+        selectedRoleId,
+    ]);
 
-   const [ rowsAffected ] = await db.query('INSERT INTO department (name) VALUES (?)', [])
-   // insert employee into employee table
-      if (rowsAffected === 0) {
-        console.log('Failed to insert employee!')
-      }
-
-    mainMenu();
-}
+        if (query) {
+        console.log("Employee added successfully!");
+        mainMenu();
+        }
+    }
 
 function handleUserChoice(command) {
     if (command === "Add Department") {
