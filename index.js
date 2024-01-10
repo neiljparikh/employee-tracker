@@ -111,12 +111,37 @@ async function addRole() {
         departmentId,
     ]);
 
-        if (query) {
+        if (query[0].length > 0) {
         console.log("Employee added successfully!");
         mainMenu();
         }
 }
 
+async function viewAllDepartments() {
+    
+   
+      const query  = await db.query('SELECT department.id, department.name AS department_name FROM department')
+      console.table(query)
+      
+      
+      if (query.length > 0) {
+        console.log("Departments retrieved successfully!");
+        mainMenu();
+        }
+}
+
+async function viewAllDepartments() {
+    
+   
+    const query  = await db.query('SELECT department.id, department.name AS department_name FROM department')
+    console.table(query)
+    
+    
+    if (query.length > 0) {
+      console.log("Departments retrieved successfully!");
+      mainMenu();
+      }
+}
 
 function handleUserChoice(command) {
     if (command === "Add Department") {
