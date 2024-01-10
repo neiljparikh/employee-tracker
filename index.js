@@ -138,8 +138,6 @@ async function addRole() {
         console.log("Employee added successfully!");
         mainMenu();
         }
-
-
 }
 
 
@@ -149,19 +147,19 @@ async function addRole() {
 
 function handleUserChoice(command) {
     if (command === "Add Department") {
-      addDepartment();
+        addDepartment();
     } else if (command === "Add Employee") {
-      viewAllDepartments();
+        addEmployee();
     } else if (command === "View All Employees") {
-      viewAllEmployees();
+        viewAllEmployees();
     } else if (command === "View All Roles") {
-      viewAllRoles();
+        viewAllRoles();
     } else if (command === "View All Departments") {
-      addEmployee();
+        viewAllDepartments();
     } else if (command === "Add Role") {
-      addRole();
+        addRole();
     } else if (command === "Update Employee Role") {
-      updateEmployeeRole();
+        updateEmployeeRole();
     } else {
       console.log("Application Quit");
     }
