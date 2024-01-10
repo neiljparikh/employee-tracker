@@ -1,32 +1,9 @@
+//DEPENDENCIES
 const inquirer = require('inquirer')
 const mysql = require('mysql2/promise');
 const connection = await mysql.createConnection({host:'localhost', user: 'root', database: 'employees'});
 
 
-// Array of questions for user input
-function mainMenu() {
-    inquirer.prompt([ 
-    {
-        type: 'list',
-        name: 'command',
-        message: "What would you like to do?",
-        choices: [
-        'View All Employees',
-        'Add Employee', 
-        'Update Employee Role', 
-        'View All Roles', 
-        'Add Role', 
-        'View All Department', 
-        'Add Department', 
-        'Quit'
-        ]
-    }   
-])
-
-.then(({command}) => {
-    handleUserChoice(command)
-})
-}
 
 //HELPER FUNCTIONS
 async function addDepartment() {
@@ -141,10 +118,6 @@ async function addRole() {
 }
 
 
-
-
-
-
 function handleUserChoice(command) {
     if (command === "Add Department") {
         addDepartment();
@@ -165,7 +138,30 @@ function handleUserChoice(command) {
     }
 }
 
+//USER INTERACTIONS
+function mainMenu() {
+    inquirer.prompt([ 
+    {
+        type: 'list',
+        name: 'command',
+        message: "What would you like to do?",
+        choices: [
+        'View All Employees',
+        'Add Employee', 
+        'Update Employee Role', 
+        'View All Roles', 
+        'Add Role', 
+        'View All Department', 
+        'Add Department', 
+        'Quit'
+        ]
+    }   
+])
 
+.then(({command}) => {
+    handleUserChoice(command)
+})
+}
 
 //INIT
 start();
