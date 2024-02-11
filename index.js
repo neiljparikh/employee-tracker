@@ -85,8 +85,8 @@ async function addRole() {
     
       
     const allDepartments  = await db.query('SELECT * FROM department')
-    const departmentChoices = allDepartments.map((department) => ({ name: department.title, value: department.id }));
-
+    const departmentChoices = allDepartments[0].map((department) => ({ name: department.name, value: department.id }));
+    
     const { title, salary, departmentId } = await inquirer.prompt([
         {
           type: "input",
@@ -106,14 +106,15 @@ async function addRole() {
         },
       ])
 
-      
-      const query = await db.query('INSERT INTO employee (title, salary, department_id) VALUES (?, ?, ?)', [
+      console.log(title)
+      const query = await db.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [
         title,
         salary,
         departmentId,
     ]);
+    console.log(query)
 
-        if (query[0].length > 0) {
+        if (query) {
         console.log("Employee added successfully!");
         mainMenu();
         }
@@ -151,6 +152,18 @@ async function viewAllDepartments() {
         }
 }
 
+
+async function viewAllRoles(){
+
+    const query = await db.query(`SELECT role.id, role.title, department.name AS departmentName, role.salary
+    FROM role
+    JOIN department ON role.department_id = department.id
+    ORDER BY role.id`)
+    console.table(query[0])
+    mainMenu()
+}
+
+
 async function viewAllEmployees() {
     
    
@@ -160,7 +173,7 @@ async function viewAllEmployees() {
     JOIN role ON employee.role_id = role.id
     JOIN department ON role.department_id = department.id
     LEFT JOIN employee AS manager ON employee.manager_id = manager.id`)
-    console.table(query)
+    console.table(query[0])
     
     
     if (query) {
